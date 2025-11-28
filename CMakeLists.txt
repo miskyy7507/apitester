@@ -14,13 +14,15 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(CURL 8.12.0 COMPONENTS HTTPS OPTIONAL_COMPONENTS brotli zstd)
 
 set(PROJECT_SOURCES
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    RequestHeadersModel.cpp
-    RequestHeadersModel.h
-    HttpClient.cpp
-    HttpClient.h
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        RequestHeadersModel.cpp
+        RequestHeadersModel.h
+        HttpClient.cpp
+        HttpClient.h
+        CurlGlobalContext.cpp
+        CurlGlobalContext.h
 )
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
