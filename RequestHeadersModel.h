@@ -9,7 +9,7 @@ class RequestHeadersModel : public QAbstractTableModel
 
 public:
     explicit RequestHeadersModel(
-        const std::vector<std::pair<std::string, std::string>> &initial_data,
+        std::vector<std::pair<std::string, std::string>> &m_data,
         QObject *parent = nullptr
         );
 
@@ -25,10 +25,8 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     void addRow(const std::string &data1, const std::string &data2); // A helper function
 
-    const std::vector<std::pair<std::string, std::string>>& get_data();
-
 private:
-    std::vector<std::pair<std::string, std::string>> m_data;
+    std::vector<std::pair<std::string, std::string>> &m_data;
 };
 
 

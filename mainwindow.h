@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include "HttpClient.h"
 #include "RequestHeadersModel.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,16 +18,19 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
-    void onAddRowClicked();
-    void onRemoveRowClicked();
+    void onAddRowClicked() const;
+    void onRemoveRowClicked() const;
 
     void sendRequest();
 
 private:
     Ui::MainWindow *ui;
     RequestHeadersModel *m_model;
+    HttpClient main_client;
+    std::vector<std::pair<std::string, std::string>> request_headers;
+    std::vector<std::pair<std::string, std::string>> response_headers;
 };
 
 #endif //APITESTER_MAINWINDOW_HPP

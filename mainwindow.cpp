@@ -1,7 +1,4 @@
 #include "mainwindow.h"
-
-#include <iostream>
-
 #include "./ui_mainwindow.h"
 #include "HttpClient.h"
 
@@ -9,7 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    m_model = new RequestHeadersModel({});
+    request_headers  = {};
+    response_headers = {};
+    m_model = new RequestHeadersModel(request_headers);
     ui->setupUi(this);
 
     // ui->requestHeaders_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -38,13 +37,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-void MainWindow::onAddRowClicked() {
+void MainWindow::onAddRowClicked() const {
     m_model->addRow("New Entry", "");
 
     ui->requestHeaders_tableView->scrollToBottom();
 }
 
-void MainWindow::onRemoveRowClicked() {
+void MainWindow::onRemoveRowClicked() const {
     QModelIndexList selected_rows = ui->requestHeaders_tableView->selectionModel()->selectedRows();
 
     if (!selected_rows.isEmpty()) {
@@ -55,38 +54,31 @@ void MainWindow::onRemoveRowClicked() {
 }
 
 void MainWindow::sendRequest() {
-    std::cout << "Method: " << ui->requestMethod_comboBox->currentText().toStdString() << '\n';
-    std::cout << "URL: " <<  ui->requestUrl_lineEdit->text().toStdString() << '\n';
-    auto headers = m_model->get_data();
-
-    for (const auto& [value, name] : headers) {
-        std::cout << value << ": " << name << '\n';
-    }
-
-    std::cout << "Body: " << ui->requestBody_plainTextEdit->toPlainText().toStdString() << '\n';
-
     ui->tabWidget->setCurrentIndex(1);
 
-    HttpClient client;
-    auto result = client.sendRequest(
+
+    auto result = main_client.sendRequest(
         ui->requestMethod_comboBox->currentText().toStdString(),
         ui->requestUrl_lineEdit->text().toStdString(),
-        m_model->get_data(),
+        request_headers,
         ui->requestBody_plainTextEdit->toPlainText().toStdString()
         );
 
-    std::cout << result.httpCode << std::endl;
-    std::cout << result.data << std::endl;
+    this->response_headers = std::move(result.headers);
 
     ui->responseBody_plainTextEdit->setPlainText(QString::fromStdString(result.data));
 
-    const QItemSelectionModel *m = ui->responseHeaders_tableView->selectionModel();
-    ui->responseHeaders_tableView->setModel(new RequestHeadersModel(result.headers));
-    delete m;
+    auto *newModel = new RequestHeadersModel(this->response_headers);
+
+    auto *oldModel = ui->responseHeaders_tableView->model();
+    ui->responseHeaders_tableView->setModel(newModel);
+
+    delete oldModel;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete m_model;
+    delete ui->responseHeaders_tableView->model();
 }

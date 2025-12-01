@@ -3,10 +3,10 @@
 #include <iostream>
 #include <qcolor.h>
 
-RequestHeadersModel::RequestHeadersModel(const std::vector<std::pair<std::string, std::string>> &initial_data,
+RequestHeadersModel::RequestHeadersModel(std::vector<std::pair<std::string, std::string>> &m_data,
                                          QObject *parent)
         : QAbstractTableModel(parent)
-        , m_data(initial_data)
+        , m_data(m_data)
 {}
 
 int RequestHeadersModel::rowCount(const QModelIndex &) const {
@@ -111,10 +111,6 @@ void RequestHeadersModel::addRow(const std::string &data1, const std::string &da
         m_data[new_row] = {data1, data2};
         emit dataChanged(index(new_row, 0), index(new_row, 1), {Qt::DisplayRole, Qt::EditRole});
     }
-}
-
-const std::vector<std::pair<std::string, std::string>> & RequestHeadersModel::get_data() {
-    return m_data;
 }
 
 // *** For Removing Rows ***
