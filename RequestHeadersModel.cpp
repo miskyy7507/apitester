@@ -18,7 +18,7 @@ int RequestHeadersModel::columnCount(const QModelIndex &) const {
 }
 
 QVariant RequestHeadersModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || index.row() >= m_data.size())
+    if (!index.isValid() || index.row() >= static_cast<int>(m_data.size()))
         return QVariant();
 
     const auto &row_data = m_data.at(index.row());
@@ -65,7 +65,7 @@ bool RequestHeadersModel::setData(const QModelIndex &index, const QVariant &valu
         int row = index.row();
         int col = index.column();
 
-        if (row >= 0 && row < m_data.size()) {
+        if (row >= 0 && row < static_cast<int>(m_data.size())) {
             auto &row_data = m_data[row];
             bool success = false;
 
@@ -91,7 +91,7 @@ bool RequestHeadersModel::setData(const QModelIndex &index, const QVariant &valu
 // *** For Adding Rows ***
 bool RequestHeadersModel::insertRows(int row, int count, const QModelIndex &parent) {
     Q_UNUSED(parent);
-    if (row < 0 || row > m_data.size() || count <= 0)
+    if (row < 0 || row > static_cast<int>(m_data.size()) || count <= 0)
         return false;
 
     beginInsertRows(QModelIndex(), row, row + count - 1);
@@ -104,7 +104,7 @@ bool RequestHeadersModel::insertRows(int row, int count, const QModelIndex &pare
 }
 
 void RequestHeadersModel::addRow(const std::string &data1, const std::string &data2) {
-    int new_row = m_data.size();
+    int new_row = static_cast<int>(m_data.size());
     if (insertRows(new_row, 1)) {
         // The insertRows implementation above adds a default row.
         // We now update it with the specific values.
@@ -116,7 +116,7 @@ void RequestHeadersModel::addRow(const std::string &data1, const std::string &da
 // *** For Removing Rows ***
 bool RequestHeadersModel::removeRows(int row, int count, const QModelIndex &parent) {
     Q_UNUSED(parent);
-    if (row < 0 || row + count > m_data.size() || count <= 0)
+    if (row < 0 || row + count > static_cast<int>(m_data.size()) || count <= 0)
         return false;
 
     beginRemoveRows(QModelIndex(), row, row + count - 1);

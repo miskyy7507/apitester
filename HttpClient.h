@@ -36,7 +36,7 @@ private:
      * @param userp Pointer to the string where data will be appended (our HttpResponse::data).
      * @return The total number of bytes processed.
      */
-    static size_t write_callback(char* contents, size_t size, size_t nmemb, void* userp);
+    static size_t write_callback(const char* contents, size_t size, size_t nmemb, void* userp);
 };
 
 

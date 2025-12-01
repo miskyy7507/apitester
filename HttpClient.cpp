@@ -75,7 +75,7 @@ HttpClient::HttpResponse HttpClient::sendRequest(
     return response;
 }
 
-size_t HttpClient::write_callback(char *contents, size_t size, size_t nmemb, void *userp) {
+size_t HttpClient::write_callback(const char *contents, size_t size, size_t nmemb, void *userp) {
     size_t total_size = size * nmemb;
     static_cast<std::string*>(userp)->append(contents, total_size);
     return total_size;
